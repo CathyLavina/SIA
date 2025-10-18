@@ -1,9 +1,8 @@
 
 <?php 
-include 'db.php';
-include 'session_auth.php';
-include 'sidebar.php';
-include 'header.php';
+include '../connection.php';
+include '../Components/sidebar.php';
+include '../Components/header.php';
 
 $books = [];
 $sql = "SELECT * FROM Book LIMIT 10";
@@ -27,12 +26,12 @@ if ($result) {
                 <h6 class="mb-3">STUDENT INFORMATION</h6>
 
                 <div class="text-center mb-4">
-                    <img id="studentProfilePic" src="img/Pink.jpg" class="rounded-circle" width="120" height="120">
+                    <img id="studentProfilePic" src="../img/cdsp_logo.png" class="rounded-circle" width="120" height="120">
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">STUDENT ID NO.</label>
-                    <input type="text" id="studentId" class="form-control" placeholder="Enter student ID">
+                    <input type="text" id="studentId" name="student_id_no" class="form-control" placeholder="Enter student ID">
                     <div id="studentSuggestions" class="list-group"
                         style="display:none; max-height:150px; overflow-y:auto; position:absolute; z-index:1000;">
                     </div>

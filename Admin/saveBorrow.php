@@ -12,7 +12,8 @@ if (!isset($input['student_id'], $input['borrow_date'], $input['due_date'], $inp
     exit;
 }
 
-$studentId = intval($input['student_id']);
+// ✅ 1. Remove intval() to keep full ID (with dashes)
+$studentId = $conn->real_escape_string($input['student_id']);
 $borrowDate = $conn->real_escape_string($input['borrow_date']);
 $dueDate = $conn->real_escape_string($input['due_date']);
 $books = $input['books'];
@@ -25,13 +26,13 @@ try {
     foreach ($books as $bookId) {
         $bookId = intval($bookId);
 
-        // Insert record
-        $stmt = $conn->prepare("INSERT INTO Borrow_Record (User_Type, User_ID, Book_ID, Borrow_Date, Due_Date) VALUES ('student', ?, ?, ?, ?)");
-        $stmt->bind_param("iiss", $studentId, $bookId, $borrowDate, $dueDate);
+        // ✅ 2. Use "siss" (string, int, string, string)
+        $stmt = $conn->prepare("INSERT INTO Borrow_Record (User_Type, Student_ID_Number, Book_ID, Borrow_Date, Due_Date) VALUES ('student', ?, ?, ?, ?)");
+        $stmt->bind_param("siss", $studentId, $bookId, $borrowDate, $dueDate);
         $stmt->execute();
         $stmt->close();
 
-        // Optionally, update Book table (borrowed copies)
+        // Update Book table
         $stmt2 = $conn->prepare("UPDATE Book SET Borrowed_Copies = Borrowed_Copies + 1, Available_Copies = Available_Copies - 1 WHERE Book_ID = ?");
         $stmt2->bind_param("i", $bookId);
         $stmt2->execute();

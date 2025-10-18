@@ -1,5 +1,5 @@
 <?php
-include 'db.php'; // make sure this connects to your database (lms_db)
+include 'db.php'; // connect to your lms_db
 
 $q = $_GET['q'] ?? '';
 
@@ -8,25 +8,25 @@ if (empty($q)) {
   exit;
 }
 
-// Search for matching students (by ID number or name)
+// 🔍 Search students by Student_ID_Number or Name
 $sql = "
   SELECT 
     s.Student_ID AS student_id,
     s.Name AS name,
-    s.School_ID_Number AS school_id,
+    s.Student_ID_Number AS student_id_no,
     s.Course AS course,
     s.Year_Level AS year_level
   FROM Students s
-  WHERE s.School_ID_Number LIKE '%$q%' OR s.Name LIKE '%$q%'
+  WHERE s.Student_ID_Number LIKE '%$q%' OR s.Name LIKE '%$q%'
   LIMIT 10
 ";
 
 $result = $conn->query($sql);
-
 $students = [];
 
 while ($row = $result->fetch_assoc()) {
-  // Get borrowed books for each student
+
+  // 📚 Get borrowed books using Student_ID_Number
   $borrow_sql = "
     SELECT 
       b.Book_ID AS book_id,
@@ -36,7 +36,9 @@ while ($row = $result->fetch_assoc()) {
       br.Status AS status
     FROM Borrow_Record br
     JOIN Book b ON br.Book_ID = b.Book_ID
-    WHERE br.User_Type = 'student' AND br.User_ID = '{$row['student_id']}' AND br.Status = 'borrowed'
+    WHERE br.User_Type = 'student'
+      AND br.Student_ID_Number = '{$row['student_id_no']}'
+      AND br.Status = 'borrowed'
   ";
 
   $borrow_result = $conn->query($borrow_sql);
@@ -50,6 +52,7 @@ while ($row = $result->fetch_assoc()) {
   $students[] = $row;
 }
 
+// 🧾 Return JSON data for JS
 echo json_encode($students);
 $conn->close();
 ?>

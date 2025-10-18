@@ -3,7 +3,7 @@
 // Single-file dashboard + AJAX endpoints for quick setup.
 // DB connection:
 // require/include your db.php which should create $conn (mysqli).
-include 'db.php'; // <-- adjust path if needed
+include '../connection.php'; // <-- adjust path if needed
 
 // -----------------------------
 // AJAX endpoints (same file)
@@ -246,7 +246,7 @@ $activeCount = 0; // placeholder
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Load your dashboard.css externally (kept separate as requested) -->
-  <link rel="stylesheet" href="dashboard.css">
+  <link rel="stylesheet" href="../Admin/dashboard.css">
 
   <style>
     /* modal width class (no !important) */
@@ -258,8 +258,8 @@ $activeCount = 0; // placeholder
   </style>
 </head>
 <body>
-  <?php include 'header.php'; ?>
-  <?php include 'sidebar.php'; ?>
+  <?php include '../Components/header.php'; ?>
+  <?php include '../Components/sidebar.php'; ?>
 
   <main class="main-content">
     <div class="container py-4">

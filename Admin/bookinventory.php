@@ -1,6 +1,6 @@
 <?php
-include 'db.php';
-include 'session_auth.php';
+include '../connection.php';
+// include '../session_auth.php';
 
 // --- GET CATEGORIES & LOCATIONS ---
 $categories = $conn->query("SELECT * FROM Category");
@@ -84,8 +84,8 @@ $result = $conn->query("SELECT * FROM Book");
 </head>
 <body class="bg-light">
 
-<?php include 'header.php'; ?>
-<?php include 'sidebar.php'; ?>
+  <?php include '../Components/header.php'; ?>
+  <?php include '../Components/sidebar.php'; ?>
 
 
   <!-- CONTENT -->
@@ -98,29 +98,53 @@ $result = $conn->query("SELECT * FROM Book");
       <div class="card shadow-sm mb-4">
         <div class="card-body">
           <h5 class="card-title">Add a New Book</h5>
-          <form class="row g-3" method="POST" enctype="multipart/form-data">
+          <form id="addBookForm" class="row g-3" method="POST" enctype="multipart/form-data">
+
             <div class="col-md-3"><label class="form-label">ISBN</label><input type="text" name="isbn" class="form-control" required></div>
             <div class="col-md-3"><label class="form-label">Title</label><input type="text" name="title" class="form-control" required></div>
             <div class="col-md-3"><label class="form-label">Author</label><input type="text" name="author" class="form-control"></div>
             <div class="col-md-3">
-              <label class="form-label">Category</label>
-              <select name="category" class="form-select" required>
-                <option value="">-- Select Category --</option>
-                <?php while($cat = $categories->fetch_assoc()): ?>
-                  <option value="<?= $cat['Category_Name'] ?>"><?= $cat['Category_Name'] ?></option>
-                <?php endwhile; ?>
-              </select>
-            </div>
+  <label class="form-label">Category</label>
+  <div class="category-wrapper" style="position: relative;">
+    <select name="category" id="categorySelect" class="form-select" required>
+      <option value="">-- Select Category --</option>
+      <?php while($cat = $categories->fetch_assoc()): ?>
+        <option value="<?= $cat['Category_Name'] ?>"><?= $cat['Category_Name'] ?></option>
+      <?php endwhile; ?>
+      <option value="add_new">➕ Add New Category</option>
+    </select>
+
+    <input type="text"
+      id="newCategoryInput"
+      name="new_category"
+      class="form-control"
+      placeholder="Enter new category"
+      style="display:none; position:absolute; top:0; left:0; width:100%;">
+  </div>
+</div>
+
+
             <div class="col-md-3"><label class="form-label">Publication Date</label><input type="date" name="pub_date" class="form-control"></div>
             <div class="col-md-3">
-              <label class="form-label">Location</label>
-              <select name="location" class="form-select" required>
-                <option value="">-- Select Location --</option>
-                <?php while($loc = $locations->fetch_assoc()): ?>
-                  <option value="<?= $loc['Location_Name'] ?>"><?= $loc['Location_Name'] ?></option>
-                <?php endwhile; ?>
-              </select>
-            </div>
+  <label class="form-label">Location</label>
+  <div class="location-wrapper" style="position: relative;">
+    <select name="location" id="locationSelect" class="form-select" required>
+      <option value="">-- Select Location --</option>
+      <?php while($loc = $locations->fetch_assoc()): ?>
+        <option value="<?= $loc['Location_Name'] ?>"><?= $loc['Location_Name'] ?></option>
+      <?php endwhile; ?>
+      <option value="add_new">➕ Add New Location</option>
+    </select>
+
+    <input type="text"
+      id="newLocationInput"
+      name="new_location"
+      class="form-control"
+      placeholder="Enter new location"
+      style="display:none; position:absolute; top:0; left:0; width:100%;">
+  </div>
+</div>
+
             <div class="col-md-2"><label class="form-label">Total Copies</label><input type="number" name="total" class="form-control" min="1" required></div>
             <div class="col-md-4"><label class="form-label">Cover Image</label><input type="file" name="cover_image" class="form-control"></div>
             <div class="col-12"><label class="form-label">Description</label><textarea name="description" class="form-control" rows="3"></textarea></div>
@@ -278,5 +302,91 @@ $result = $conn->query("SELECT * FROM Book");
       successModal.show();
     <?php endif; ?>
   </script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const categorySelect = document.getElementById("categorySelect");
+  const newCategoryInput = document.getElementById("newCategoryInput");
+  const locationSelect = document.getElementById("locationSelect");
+  const newLocationInput = document.getElementById("newLocationInput");
+
+  categorySelect.addEventListener("change", () => {
+    if (categorySelect.value === "add_new") {
+      categorySelect.style.display = "none";
+      newCategoryInput.style.display = "block";
+      newCategoryInput.focus();
+    }
+  });
+
+  locationSelect.addEventListener("change", () => {
+    if (locationSelect.value === "add_new") {
+      locationSelect.style.display = "none";
+      newLocationInput.style.display = "block";
+      newLocationInput.focus();
+    }
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest(".category-wrapper")) {
+      if (newCategoryInput.style.display === "block" && newCategoryInput.value === "") {
+        newCategoryInput.style.display = "none";
+        categorySelect.style.display = "block";
+        categorySelect.value = "";
+      }
+    }
+
+    if (!e.target.closest(".location-wrapper")) {
+      if (newLocationInput.style.display === "block" && newLocationInput.value === "") {
+        newLocationInput.style.display = "none";
+        locationSelect.style.display = "block";
+        locationSelect.value = "";
+      }
+    }
+  });
+
+  newCategoryInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const newCategory = newCategoryInput.value.trim();
+      if (newCategory) {
+        fetch("save_category_location.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: "newCategory=" + encodeURIComponent(newCategory)
+        })
+        .then(res => res.text())
+        .then(response => {
+          alert(response);
+          location.reload();
+        });
+      }
+    }
+  });
+
+  newLocationInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const newLocation = newLocationInput.value.trim();
+      if (newLocation) {
+        fetch("add_option.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: "newLocation=" + encodeURIComponent(newLocation)
+        })
+        .then(res => res.text())
+        .then(response => {
+          alert(response);
+          location.reload();
+        });
+      }
+    }
+  });
+});
+</script>
+
+
+
+
 </body>
 </html>

@@ -103,15 +103,136 @@ h1 {
   margin-top: 25px;
 }
 
+/* ------------------------------
+   ✅ STUDENT INFO & BOOK TABLE STYLES
+------------------------------ */
+
+/* Card styling (for Student Info and Borrowed Books) */
 .card {
-  background: #fafafa;
-  border-radius: 10px;
-  padding: 15px;
-  border: 1px solid #ddd;
-  text-align: left;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px 25px;
+  border: 1px solid #e2e2e2;
+  margin-bottom: 25px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
 }
 
 .card h3 {
-  margin-top: 0;
-  color: #007bff;
+  font-size: 18px;
+  color: #2b5aa6;
+  border-bottom: 2px solid #2b5aa6;
+  padding-bottom: 6px;
+  margin-bottom: 15px;
 }
+
+/* Text inside card */
+.card p {
+  font-size: 15px;
+  color: #333;
+  margin: 5px 0;
+}
+
+.card p strong {
+  color: #000;
+}
+
+/* ------------------------------
+   ✅ TABLE STYLES FOR BORROWED BOOKS
+------------------------------ */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  font-size: 15px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+thead {
+  background: #40739e;
+  color: white;
+  text-align: left;
+}
+
+th, td {
+  padding: 10px 14px;
+  border-bottom: 1px solid #e6e6e6;
+}
+
+tbody tr:hover {
+  background: #f7f9fc;
+  transition: background 0.2s ease;
+}
+
+/* Status column */
+td:nth-child(5) {
+  text-transform: capitalize;
+}
+
+/* ------------------------------
+   ✅ RETURN BUTTON
+------------------------------ */
+.return-btn {
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.return-btn:hover {
+  background: #218838;
+  transform: scale(1.03);
+}
+
+.return-btn:active {
+  background: #1e7e34;
+  transform: scale(0.98);
+}
+
+/* ------------------------------
+   ✅ NO RESULTS MESSAGE
+------------------------------ */
+.result p {
+  font-size: 15px;
+  color: #666;
+  text-align: center;
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  padding: 12px;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+/* ------------------------------
+   ✅ PAGE TITLE
+------------------------------ */
+.page-title {
+  font-size: 24px;
+  color: #2b5aa6;
+  font-weight: 600;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* ------------------------------
+   ✅ SCROLLBAR STYLING (subtle)
+------------------------------ */
+.suggestions::-webkit-scrollbar {
+  width: 6px;
+}
+
+.suggestions::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 3px;
+}
+
